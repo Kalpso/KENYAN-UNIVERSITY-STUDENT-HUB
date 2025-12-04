@@ -1,0 +1,223 @@
+<!-- Kenyan Student Hub - Full HTML System with Kenyan Flag Theme Login --->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kenyan Student Hub - Full System</title>
+<style>
+  body { font-family: Arial; margin:0; padding:0; background:#f2f2f2; transition:0.3s; }
+  header { background:#000000; color:white; padding:20px; text-align:center; }
+  nav a { margin:0 15px; color:white; text-decoration:none; font-weight:bold; }
+  .container { width:90%; max-width:900px; margin:auto; padding:20px; }
+  .card { background:white; padding:20px; margin-top:20px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3); animation:fade 0.4s; }
+  input, select, textarea { width:100%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
+  button { padding:10px 20px; background:#0066cc; color:white; border:none; border-radius:5px; cursor:pointer; }
+  button:hover { background:#004c99; }
+  @keyframes fade { from {opacity:0;} to {opacity:1;} }
+  .dark { background:#121212; color:white; }
+  .dark .card { background:#1f1f1f; color:white; }
+  .menu-btn { display:none; }
+  @media(max-width:700px){ nav { display:none; flex-direction:column; } nav.active { display:flex; } .menu-btn { display:block; background:#004c99; color:white; padding:10px; border:none; width:100%; } }
+
+  /* LOGIN PAGE SPECIFIC */
+  #loginPage { width:90%; max-width:400px; margin:50px auto; padding:20px; background:white; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.3); }
+  #loginPage h2 { text-align:center; color:#006600; }
+  #loginPage button { width:100%; padding:12px; background:#ff0000; color:white; border:none; border-radius:8px; font-size:16px; cursor:pointer; }
+  #loginPage button:hover { background:#006600; }
+  .extra { text-align:center; margin-top:10px; }
+  .extra a { color:#000000; text-decoration:none; font-weight:bold; }
+  .error { color:red; text-align:center; margin-top:10px; }
+  .success { color:green; text-align:center; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Kenyan University Student Hub</h1>
+  <button class="menu-btn" onclick="toggleMenu()">MENU</button>
+  <nav id="navMenu">
+    <a href="#home" onclick="show('home')">Home</a>
+    <a href="#login" onclick="show('loginPage')">Login</a>
+    <a href="#register" onclick="show('register')">Register</a>
+    <a href="#forum" onclick="show('forum')">Forum</a>
+    <a href="#events" onclick="show('events')">Events</a>
+    <a href="#materials" onclick="show('materials')">Materials</a>
+    <a href="#projects" onclick="show('projects')">Projects</a>
+    <a href="#profile" onclick="show('profile')">Profile</a>
+    <a href="#" onclick="toggleDark()">Dark Mode</a>
+  </nav>
+</header>
+
+<div class="container">
+
+<!-- HOME -->
+<div class="card page" id="home">
+  <h2>Welcome to the Student Hub</h2>
+  <p>A unified Kenyan university platform for collaboration, resources & events.</p>
+  <input type="text" id="search" placeholder="Search..." oninput="searchAll()" />
+  <div id="searchResults"></div>
+</div>
+
+<!-- LOGIN -->
+<div class="card page" id="loginPage" style="display:none;">
+  <h2>Login</h2>
+  <input type="text" id="loginUser" placeholder="Username">
+  <input type="password" id="loginPass" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <p class="error" id="loginError"></p>
+  <p class="success" id="loginSuccess"></p>
+  <div class="extra">
+    <p><a href="#" onclick="show('register')">Don't have an account? Register</a></p>
+    <p><a href="#" onclick="forgotPassword()">Forgot Password?</a></p>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div class="card page" id="register" style="display:none;">
+  <h2>Register</h2>
+  <input id="regUser" placeholder="Username">
+  <input id="regPass" placeholder="Password" type="password">
+  <select id="regUni">
+    <option>University of Nairobi</option>
+    <option>Kenyatta University</option>
+    <option>Moi University</option>
+    <option>JKUAT</option>
+    <option>Egerton University</option>
+  </select>
+  <button onclick="register()">Create Account</button>
+  <p id="regMsg"></p>
+</div>
+
+<!-- PROFILE -->
+<div class="card page" id="profile" style="display:none;">
+  <h2>Your Profile</h2>
+  <p><b>Username:</b> <span id="pUser"></span></p>
+  <p><b>University:</b> <span id="pUni"></span></p>
+  <textarea id="pBio" placeholder="Your bio..."></textarea>
+  <button onclick="saveBio()">Save Bio</button>
+</div>
+
+<!-- FORUM -->
+<div class="card page" id="forum" style="display:none;">
+  <h2>Forum</h2>
+  <textarea id="forumPost" placeholder="Write something..."></textarea>
+  <button onclick="postForum()">Post</button>
+  <div id="forumList"></div>
+</div>
+
+<!-- EVENTS -->
+<div class="card page" id="events" style="display:none;">
+  <h2>Post an Event</h2>
+  <input id="eventTitle" placeholder="Event title">
+  <textarea id="eventDesc" placeholder="Event description"></textarea>
+  <button onclick="addEvent()">Submit Event</button>
+  <h3>Upcoming Events</h3>
+  <div id="eventList"></div>
+</div>
+
+<!-- MATERIALS -->
+<div class="card page" id="materials" style="display:none;">
+  <h2>Academic Materials</h2>
+  <input id="matName" placeholder="Material Name">
+  <textarea id="matDesc" placeholder="Description"></textarea>
+  <button onclick="addMaterial()">Upload</button>
+  <div id="matList"></div>
+</div>
+
+<!-- PROJECTS -->
+<div class="card page" id="projects" style="display:none;">
+  <h2>Student Projects</h2>
+  <input id="projName" placeholder="Project Name">
+  <textarea id="projDesc" placeholder="Description"></textarea>
+  <button onclick="addProject()">Add Project</button>
+  <div id="projList"></div>
+</div>
+
+</div>
+
+<script>
+// ================= MENU ==================
+function toggleMenu(){ document.getElementById('navMenu').classList.toggle('active'); }
+
+// ================= DARK MODE ==================
+function toggleDark(){ document.body.classList.toggle('dark'); }
+
+// ================= PAGE SYSTEM ==================
+function show(id){ document.querySelectorAll('.page').forEach(p=>p.style.display='none'); document.getElementById(id).style.display='block'; }
+
+// ================= LOCALSTORAGE BACKEND ==================
+let users = JSON.parse(localStorage.getItem('users')||'{}');
+let current = localStorage.getItem('currentUser')||'';
+let forum = JSON.parse(localStorage.getItem('forum')||'[]');
+let events = JSON.parse(localStorage.getItem('events')||'[]');
+let materials = JSON.parse(localStorage.getItem('materials')||'[]');
+let projects = JSON.parse(localStorage.getItem('projects')||'[]');
+
+function save(){
+  localStorage.setItem('users',JSON.stringify(users));
+  localStorage.setItem('forum',JSON.stringify(forum));
+  localStorage.setItem('events',JSON.stringify(events));
+  localStorage.setItem('materials',JSON.stringify(materials));
+  localStorage.setItem('projects',JSON.stringify(projects));
+  if(current) localStorage.setItem('currentUser',current);
+}
+
+// ================= REGISTER ==================
+function register(){
+  let u = regUser.value, p = regPass.value;
+  if(users[u]) return regMsg.innerText = "Username exists!";
+  users[u]={password:p, university:regUni.value, bio:''};
+  save();
+  regMsg.innerText="Account created!";
+}
+
+// ================= LOGIN ==================
+function login(){
+  let u = loginUser.value, p = loginPass.value;
+  if(users[u] && users[u].password===p){
+    current=u; save(); loginError.innerText=''; loginSuccess.innerText='Login successful!'; loadProfile(); show('profile');
+  } else loginError.innerText='Invalid credentials'; loginSuccess.innerText='';
+}
+
+function forgotPassword(){
+  let u = prompt('Enter your username for password reset:');
+  if(users[u]) alert('Your password is: '+users[u].password);
+  else alert('User not found');
+}
+
+// ================= PROFILE ==================
+function saveBio(){ users[current].bio=pBio.value; save(); }
+function loadProfile(){ if(!current) return; pUser.innerText=current; pUni.innerText=users[current].university; pBio.value=users[current].bio; }
+
+// ================= FORUM ==================
+function postForum(){ forum.push({user:current, text:forumPost.value}); save(); loadForum(); }
+function loadForum(){ forumList.innerHTML = forum.map(f=>`<p><b>${f.user}:</b> ${f.text}</p>`).join(''); }
+
+// ================= EVENTS ==================
+function addEvent(){ events.push({title:eventTitle.value, desc:eventDesc.value}); save(); loadEvents(); }
+function loadEvents(){ eventList.innerHTML = events.map(e=>`<p><b>${e.title}</b><br>${e.desc}</p>`).join(''); }
+
+// ================= MATERIALS ==================
+function addMaterial(){ materials.push({name:matName.value, desc:matDesc.value}); save(); loadMaterials(); }
+function loadMaterials(){ matList.innerHTML = materials.map(m=>`<p><b>${m.name}</b><br>${m.desc}</p>`).join(''); }
+
+// ================= PROJECTS ==================
+function addProject(){ projects.push({name:projName.value, desc:projDesc.value}); save(); loadProjects(); }
+function loadProjects(){ projList.innerHTML = projects.map(p=>`<p><b>${p.name}</b><br>${p.desc}</p>`).join(''); }
+
+// ================= SEARCH ==================
+function searchAll(){ let q = search.value.toLowerCase(); let res = [];
+  forum.forEach(f=>{ if(f.text.toLowerCase().includes(q)) res.push("Forum: "+f.text); });
+  events.forEach(e=>{ if(e.title.toLowerCase().includes(q)) res.push("Event: "+e.title); });
+  materials.forEach(m=>{ if(m.name.toLowerCase().includes(q)) res.push("Material: "+m.name); });
+  projects.forEach(p=>{ if(p.name.toLowerCase().includes(q)) res.push("Project: "+p.name); });
+  searchResults.innerHTML = res.join('<br>');
+}
+
+// LOAD EVERYTHING
+loadForum(); loadEvents(); loadMaterials(); loadProjects(); loadProfile();
+</script>
+
+</body>
+</html>
